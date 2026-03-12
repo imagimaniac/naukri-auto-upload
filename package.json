@@ -1,0 +1,15 @@
+{
+  "name": "naukri-auto-upload",
+  "version": "1.0.0",
+  "description": "Automated resume upload to Naukri using GitHub Actions",
+  "main": "upload-resume.js",
+  "scripts": {
+    "upload": "node upload-resume.js"
+  },
+  "keywords": ["naukri", "resume", "automation"],
+  "author": "Pratik",
+  "license": "MIT",
+  "dependencies": {
+    "playwright": "^1.40.0"
+  }
+}

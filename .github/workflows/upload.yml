@@ -1,0 +1,50 @@
+name: Naukri Resume Upload
+
+on:
+  schedule:
+    # Runs every hour from 9 AM to 9 PM (UTC = 9 AM to 9 PM IST is different)
+    # Using cron: minute hour * * *
+    # Running every hour, 12 times a day
+    - cron: '0 9-21 * * *'
+  workflow_dispatch:
+    # Manual trigger option
+  push:
+    branches: [main]
+
+jobs:
+  upload-resume:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install dependencies
+        run: |
+          npm install playwright
+          npx playwright install chromium
+      
+      - name: Create cookies file
+        env:
+          NAUKRI_COOKIES: ${{ secrets.NAUKRI_COOKIES }}
+        run: |
+          echo "$NAUKRI_COOKIES" > cookies.json
+      
+      - name: Upload resume
+        run: node upload-resume.js
+      
+      - name: Send success notification
+        if: success()
+        run: |
+          echo "Resume uploaded successfully at $(date)"
+      
+      - name: Upload failed notification
+        if: failure()
+        run: |
+          echo "Resume upload failed at $(date)"
